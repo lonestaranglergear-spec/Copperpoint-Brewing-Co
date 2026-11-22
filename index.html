@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Perfect Pour · Copperpoint Brewing Co.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--cu:#d4703a;--cu2:#f2a566;--bg:#1b1917;--card:#26221f;--line:#4a3f35;--tx:#f4ead9;--mut:#a89c8a;color-scheme:dark}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%}
+body{background:radial-gradient(120% 70% at 50% 0,#3a2c20,var(--bg) 70%) fixed;color:var(--tx);font:600 16px/1.45 Nunito,system-ui,sans-serif;display:flex;justify-content:center}
+.app{width:100%;max-width:460px;padding:18px 18px calc(26px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;text-align:center}
+h1,h2,.big{font-family:'Bebas Neue',Impact,sans-serif;font-weight:400;letter-spacing:.04em;margin:0;line-height:1}
+h1{font-size:58px;color:var(--cu2)}
+h2{font-size:34px}
+.logo{height:56px;max-width:80%;object-fit:contain;margin:2px 0 8px}
+.top{width:100%;display:flex;justify-content:space-between;align-items:center;min-height:40px}
+#mute{background:none;border:2px solid var(--line);color:var(--tx);border-radius:50%;width:40px;height:40px;font-size:18px;cursor:pointer}
+.screen{display:none;width:100%;flex-direction:column;align-items:center;gap:14px}
+.screen.on{display:flex}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;width:100%}
+.sub{color:var(--mut);margin:0}
+.pills{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.pills span{border:1px solid var(--line);border-radius:99px;padding:3px 11px;font-size:13px;color:var(--mut)}
+input[type=email]{width:100%;padding:14px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--tx);font:inherit;font-size:17px}
+input[type=email]:focus,.btn:focus-visible,#mute:focus-visible{outline:3px solid var(--cu2);outline-offset:2px}
+label.chk{display:flex;gap:10px;text-align:left;font-size:13px;color:var(--mut);align-items:flex-start;margin-top:10px}
+label.chk input{margin-top:3px;width:18px;height:18px;accent-color:var(--cu)}
+.btn{border:0;border-radius:12px;padding:15px 22px;font:400 28px 'Bebas Neue',Impact,sans-serif;letter-spacing:.06em;color:#1b1917;background:linear-gradient(#f6b273,var(--cu));box-shadow:0 5px 0 #8f4520;cursor:pointer;width:100%;touch-action:none;user-select:none;-webkit-user-select:none;text-decoration:none;display:block}
+.btn:active,.btn.hold{transform:translateY(3px);box-shadow:0 2px 0 #8f4520}
+.ghost{background:transparent;color:var(--tx);box-shadow:none;border:2px solid var(--line);font-size:22px;padding:11px}
+.hud{width:100%;display:flex;justify-content:space-between;align-items:flex-end}
+.hud div{display:flex;flex-direction:column;font-size:12px;color:var(--mut)}
+.hud b{font:400 34px 'Bebas Neue',Impact,sans-serif;color:var(--tx);line-height:1}
+.stage{position:relative;width:200px;height:310px;margin-top:6px}
+.tap{position:absolute;left:50%;top:0;width:74px;height:30px;transform:translateX(-50%);background:linear-gradient(#e8c9a8,#a98a6a);border-radius:8px 8px 14px 14px}
+.stream{position:absolute;left:50%;top:30px;width:8px;margin-left:-4px;display:none;border-radius:4px;border:1px solid rgba(255,255,255,.25)}
+.glass{position:absolute;left:50%;bottom:0;width:140px;height:260px;margin-left:-70px;border:3px solid rgba(255,255,255,.55);border-top:0;border-radius:0 0 24px 24px;background:rgba(255,255,255,.06)}
+.liq{position:absolute;left:0;right:0;bottom:0;height:0;border-radius:0 0 20px 20px}
+.foam{position:absolute;left:-2px;right:-2px;top:-9px;height:11px;border-radius:8px 8px 3px 3px;display:none}
+.mark{position:absolute;left:-18px;right:-18px;transform:translateY(50%);background:rgba(242,165,102,.25);border-top:2px solid var(--cu2);border-bottom:2px solid var(--cu2)}
+.shake{animation:sh .35s}
+@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.beer{min-height:48px}
+.beer b{display:block;font:400 28px 'Bebas Neue',Impact,sans-serif;letter-spacing:.05em}
+#msg{min-height:34px;font:400 30px 'Bebas Neue',Impact,sans-serif;letter-spacing:.05em;color:var(--cu2)}
+#msg.pop{animation:pp .4s}
+@keyframes pp{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+.score{font:400 96px 'Bebas Neue',Impact,sans-serif;color:var(--cu2);line-height:1}
+.code{font:400 40px 'Bebas Neue',Impact,sans-serif;letter-spacing:.12em;border:2px dashed var(--cu);border-radius:10px;padding:6px 14px;display:inline-block;margin:8px 0 2px}
+.foot{font-size:12px;color:var(--mut);margin-top:18px}
+a{color:var(--cu2)}
+.seg{display:flex;width:100%;border:2px solid var(--line);border-radius:12px;overflow:hidden}
+.seg button{flex:1;padding:10px;background:none;border:0;color:var(--mut);font:400 22px 'Bebas Neue',Impact,sans-serif;letter-spacing:.06em;cursor:pointer}
+.seg button.on{background:var(--cu);color:#1b1917}
+.gcard{width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-left:6px solid var(--cu);border-radius:12px;padding:12px 16px;color:var(--tx);font:inherit;cursor:pointer}
+.gcard b{display:block;font:400 30px 'Bebas Neue',Impact,sans-serif;letter-spacing:.05em;color:var(--cu2)}
+.gcard span{color:var(--mut);font-size:14px}
+.gcard:active{transform:translateY(2px)}
+#cv{width:320px;height:420px;max-width:100%;background:linear-gradient(#2a211a,#1f1a16);border:2px solid var(--line);border-radius:14px;touch-action:none}
+.mem{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%}
+.mc{aspect-ratio:1;border:0;border-radius:12px;font:400 34px 'Bebas Neue',Impact,sans-serif;cursor:pointer;background:linear-gradient(#6b3a1d,#3a2112);color:#f2a566;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0}
+.mc small{font:800 11px Nunito,sans-serif;color:#1b1917;line-height:1.1}
+.mc.up{background:var(--c);color:#1b1917}
+.mc.ok{outline:3px solid var(--cu2)}
+@media (prefers-reduced-motion:reduce){.shake,#msg.pop{animation:none}}
+</style>
+</head>
+<body>
+<main class="app">
+  <div class="top"><span></span><button id="mute" aria-label="Sound on/off">🔊</button></div>
+  <img class="logo" id="logo" alt="Copperpoint Brewing Co." src="https://copperpointbrewingcompany.com/wp-content/uploads/2024/07/Boynton-Beach-FLs-Best-Brewery-Copperpoint-logo-light.png">
+
+  <!-- INTRO + EMAIL SIGN UP -->
+  <section class="screen on" id="intro">
+    <h1>Taproom Games</h1>
+    <p class="sub">Three quick games while you wait for your order. Play one and win an offer.</p>
+    <div class="pills" id="pills"></div>
+    <div class="card" id="f">
+      <input id="em" type="email" placeholder="Your email to play" autocomplete="email" aria-label="Email address">
+      <label class="chk"><input type="checkbox" id="age"><span>I’m 21 or older.</span></label>
+      <label class="chk"><input type="checkbox" checked disabled><span>I’d like beer release and event updates from Copperpoint. We won’t share your info.</span></label>
+      <p id="err" role="alert" style="color:#ff9a7a;min-height:20px;margin:8px 0 0;font-size:14px"></p>
+      <button class="btn" id="go" style="margin-top:6px" type="button">Start pouring</button>
+    </div>
+  </section>
+
+  <!-- GAME -->
+  <section class="screen" id="game">
+    <div class="hud"><div>Pint<b id="hr">1/5</b></div><div>Combo<b id="hc">0</b></div><div>Score<b id="hs">0</b></div></div>
+    <div class="beer"><b id="bn"></b><span class="sub" id="ba"></span></div>
+    <div class="stage" id="stage">
+      <div class="tap"></div><div class="stream" id="stream"></div>
+      <div class="glass" id="glass"><div class="mark" id="mark"></div><div class="liq" id="liq"><div class="foam" id="foam"></div></div></div>
+    </div>
+    <div id="msg" aria-live="polite"></div>
+    <button class="btn" id="pour">Hold to pour</button>
+    <p class="sub" style="font-size:13px">Hold the button to pour and let go at the copper line. Desktop: hold the space bar</p>
+  </section>
+
+  <!-- PICK -->
+  <section class="screen" id="pick">
+    <h2>Pick your game</h2>
+    <div class="seg" id="seg"><button class="on" data-d="0">Normal</button><button data-d="1">Medium</button><button data-d="2">Hard</button></div>
+    <button class="gcard" data-g="0"><b>Perfect Pour</b><span>Pour five pints right up to the copper line.</span></button>
+    <button class="gcard" data-g="1"><b>Hop Catch</b><span>Slide the glass to catch beer and honey. Dodge the stale hops. 30 seconds.</span></button>
+    <button class="gcard" data-g="2"><b>Taproom Match</b><span>Match Copperpoint beers and food trucks before time runs out.</span></button>
+  </section>
+  <section class="screen" id="catch">
+    <div class="hud"><div>Time<b id="ct">30</b></div><div>Score<b id="cs">0</b></div></div>
+    <canvas id="cv" width="640" height="840" aria-label="Hop Catch game"></canvas>
+    <p class="sub" style="font-size:13px">Drag, or use the arrow keys, to move the glass.</p>
+  </section>
+  <section class="screen" id="memory">
+    <div class="hud"><div>Time<b id="mt">60</b></div><div>Misses<b id="mx">0</b></div><div>Score<b id="ms">0</b></div></div>
+    <div class="mem" id="mem"></div>
+  </section>
+
+  <!-- RESULT -->
+  <section class="screen" id="end">
+    <h2 id="tier"></h2>
+    <div class="score" id="fs">0</div>
+    <p class="sub" id="best"></p>
+    <div class="card">
+      <div id="offer" style="font-size:19px;font-weight:800"></div>
+      <div class="code" id="code"></div>
+      <p class="sub" style="font-size:13px">Show this screen to your server before you leave.</p>
+    </div>
+    <button class="btn" id="again">Play again</button>
+    <button class="btn ghost" id="pickb">Pick another game</button>
+    <a class="btn ghost" href="https://copperpointbrewingcompany.com/menu/" target="_blank" rel="noopener">See the taproom menu</a>
+    <a class="btn ghost" href="https://copperpointbrewingcompany.com/food-truck-schedule/" target="_blank" rel="noopener">Today’s food trucks</a>
+  </section>
+
+  <p class="foot">Copperpoint Brewing Co. · 151 Commerce Road, Boynton Beach, FL<br>Please drink responsibly. Must be 21+.</p>
+</main>
+
+<script>
+/* ===== EDIT THESE PER CLIENT ===== */
+const CONFIG={
+  // Paste a form endpoint (e.g. Formspree) so emails reach the brewery. Empty = emails stay only in this browser.
+  formEndpoint:"",
+  // Offers are EXAMPLES. The brewery must approve the real rewards. "min" is the % of a top score. Keep highest first.
+  rewards:[
+    {min:75,title:"Head Brewer",offer:"EXAMPLE OFFER: Free pint on your next visit"},
+    {min:45,title:"Taproom Regular",offer:"EXAMPLE OFFER: $2 off a pint on your next visit"},
+    {min:0,title:"Fresh Pour",offer:"Thanks for playing. Pour again to win an offer."}
+  ]
+};
+const BEERS=[ // names and ABV taken from copperpointbrewingcompany.com
+  {n:"Copperpoint Lager",a:"5.0% ABV",c:"#e9b94a",d:"#b97b1c",f:"#fff3d6"},
+  {n:"Bee’s Squeeze",a:"5.0% ABV",c:"#f2c34d",d:"#c9921d",f:"#fff6dc"},
+  {n:"Everflow IPA",a:"7.0% ABV",c:"#d98a2b",d:"#9a5410",f:"#fbeacb"},
+  {n:"B. Rabbit Espresso Stout",a:"6.0% ABV",c:"#3a2418",d:"#170d08",f:"#d9b98c"},
+  {n:"Das Pils",a:"5.3% ABV",c:"#f3d96b",d:"#cfae3a",f:"#fffbe6"}
+];
+const ROUNDS=BEERS.length;
+let DIFF=0,GAME=0,LAST;
+const DN=["Normal","Medium","Hard"],GN=["Perfect Pour","Hop Catch","Taproom Match"];
+const $=s=>document.querySelector(s);
+const show=id=>document.querySelectorAll(".screen").forEach(e=>e.classList.toggle("on",e.id===id));
+const store={get(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+$("#logo").onerror=function(){this.outerHTML='<h2 style="color:#f2a566;margin:8px 0">Copperpoint Brewing Co.</h2>'};
+$("#pills").innerHTML=BEERS.map(b=>`<span>${b.n} · ${b.a}</span>`).join("");
+
+/* ===== SOUND (Web Audio, no files) ===== */
+let AC,muted=false,noise,nf;
+const au=()=>{if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state==="suspended")AC.resume()};
+function tone(f,d,type,v,at){if(muted||!AC)return;const o=AC.createOscillator(),g=AC.createGain(),s=AC.currentTime+(at||0);o.type=type||"sine";o.frequency.value=f;g.gain.setValueAtTime(v||.2,s);g.gain.exponentialRampToValueAtTime(.001,s+d);o.connect(g).connect(AC.destination);o.start(s);o.stop(s+d)}
+function pourOn(){if(muted||!AC)return;const n=AC.sampleRate*2,b=AC.createBuffer(1,n,AC.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=Math.random()*2-1;noise=AC.createBufferSource();noise.buffer=b;noise.loop=true;nf=AC.createBiquadFilter();nf.type="bandpass";nf.frequency.value=600;nf.Q.value=.9;const g=AC.createGain();g.gain.value=.14;noise.connect(nf).connect(g).connect(AC.destination);noise.start()}
+const pourPitch=p=>{if(nf)nf.frequency.value=600+p*22};
+function pourOff(){if(noise){try{noise.stop()}catch(e){}noise=nf=null}}
+const sfx={
+  perfect(){[784,988,1318].forEach((f,i)=>tone(f,.25,"triangle",.22,i*.08))},
+  good(){tone(660,.18,"triangle",.2);tone(880,.2,"triangle",.2,.09)},
+  miss(){tone(220,.25,"square",.1)},
+  over(){tone(130,.45,"sawtooth",.18);tone(90,.5,"sawtooth",.15,.1)},
+  win(){[523,659,784,1046,1318].forEach((f,i)=>tone(f,.3,"triangle",.22,i*.11))}
+};
+$("#mute").onclick=()=>{muted=!muted;$("#mute").textContent=muted?"🔇":"🔊";if(muted)pourOff()};
+
+/* ===== SIGN UP ===== */
+function signup(){
+  const email=$("#em").value.trim(),err=$("#err");
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){err.textContent="Enter a valid email to play.";return}
+  if(!$("#age").checked){err.textContent="Please confirm you’re 21 or older.";return}
+  err.textContent="";
+  try{au()}catch(x){}
+  const rec={email:email,date:new Date().toISOString(),source:"perfect-pour",age21:true};
+  const all=store.get("cp_players",[]);all.push(rec);store.set("cp_players",all);
+  if(CONFIG.formEndpoint){try{fetch(CONFIG.formEndpoint,{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(rec)}).catch(()=>{})}catch(err){}}
+  show("pick");
+}
+$("#go").addEventListener("click",signup);
+$("#em").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();signup()}});
+
+/* ===== GAME ===== */
+let rd,score,combo,fill,speed,tgt,tol,pouring,locked,last,raf;
+const liq=$("#liq"),stream=$("#stream"),mark=$("#mark"),foam=$("#foam"),msg=$("#msg");
+function hud(){$("#hr").textContent=Math.min(rd+1,ROUNDS)+"/"+ROUNDS;$("#hc").textContent=combo;$("#hs").textContent=score}
+function draw(){liq.style.height=fill+"%";foam.style.display=fill>2?"block":"none";stream.style.height=Math.max(0,310-fill*2.6-30)+"px"}
+function say(t){msg.textContent=t;msg.classList.remove("pop");void msg.offsetWidth;msg.classList.add("pop")}
+function begin(){GAME=0;LAST=begin;rd=0;score=0;combo=0;show("game");round()}
+function round(){
+  const b=BEERS[rd];
+  fill=0;locked=false;pouring=false;
+  speed=40+rd*9+DIFF*16;tol=Math.max(2.2,6.8-rd*.8-DIFF*1.3);tgt=66+Math.random()*26;
+  liq.style.background=`linear-gradient(${b.c},${b.d})`;foam.style.background=b.f;stream.style.background=b.c;
+  mark.style.bottom=tgt+"%";mark.style.height=(tol*2)+"%";
+  $("#bn").textContent=b.n;$("#ba").textContent=b.a;msg.textContent="";
+  $("#glass").classList.remove("shake");draw();hud();
+}
+function down(e){if(e)e.preventDefault();if(locked||pouring)return;au();pouring=true;last=performance.now();pourOn();stream.style.display="block";$("#pour").classList.add("hold");raf=requestAnimationFrame(tick)}
+function up(){if(pouring)finish(false)}
+function tick(t){
+  if(!pouring)return;
+  const dt=Math.min(.05,(t-last)/1000);last=t;
+  fill=Math.min(100,fill+speed*dt);draw();pourPitch(fill);
+  if(fill>=100){finish(true);return}
+  raf=requestAnimationFrame(tick);
+}
+function finish(over){
+  pouring=false;locked=true;cancelAnimationFrame(raf);pourOff();
+  stream.style.display="none";$("#pour").classList.remove("hold");
+  const d=Math.abs(fill-tgt);let pts=0;
+  if(over){combo=0;sfx.over();say("Overflow!");$("#glass").classList.add("shake");if(navigator.vibrate)navigator.vibrate(120)}
+  else{
+    pts=Math.max(0,Math.round(100-d*8));
+    if(d<=tol){combo++;if(d<=1.2){pts+=20;say("Perfect pour! +"+pts);sfx.perfect()}else{say("Nice pour! +"+pts);sfx.good()}pts+=Math.max(0,(combo-1)*10)}
+    else{combo=0;say(fill<tgt?"Too low. +"+pts:"Too high. +"+pts);sfx.miss()}
+  }
+  score+=pts;rd++;hud();
+  setTimeout(()=>rd>=ROUNDS?end(score,600):round(),1400);
+}
+const pb=$("#pour");
+pb.addEventListener("pointerdown",down);
+pb.addEventListener("contextmenu",e=>e.preventDefault());
+["pointerup","pointerleave","pointercancel"].forEach(t=>pb.addEventListener(t,up));
+document.addEventListener("keydown",e=>{if(e.code==="Space"&&$("#game").classList.contains("on")){e.preventDefault();if(!e.repeat)down()}});
+document.addEventListener("keyup",e=>{if(e.code==="Space")up()});
+
+/* ===== RESULT ===== */
+function end(sc,max){
+  const pct=Math.min(100,Math.round(sc/max*100));
+  const r=CONFIG.rewards.find(x=>pct>=x.min);
+  const key="cp_best_"+GAME+"_"+DIFF,best=Math.max(sc,store.get(key,0));store.set(key,best);
+  const code="CP-"+Math.random().toString(36).slice(2,6).toUpperCase();
+  $("#tier").textContent=r.title;$("#fs").textContent=sc;
+  $("#best").textContent=GN[GAME]+" · "+DN[DIFF]+" · best on this device: "+best;
+  $("#offer").textContent=r.offer;$("#code").textContent=code;
+  show("end");sfx.win();
+}
+$("#again").onclick=()=>{au();LAST()};
+$("#pickb").onclick=()=>show("pick");
+document.querySelectorAll("#seg button").forEach(b=>b.onclick=()=>{DIFF=+b.dataset.d;document.querySelectorAll("#seg button").forEach(x=>x.classList.toggle("on",x===b))});
+document.querySelectorAll(".gcard").forEach(b=>b.onclick=()=>{au();[begin,startCatch,startMem][+b.dataset.g]()});
+
+/* ===== GAME 2: HOP CATCH ===== */
+const cv=$("#cv"),cx=cv.getContext("2d");cx.scale(2,2);
+let hc=null,cRaf;
+function startCatch(){
+  GAME=1;LAST=startCatch;cancelAnimationFrame(cRaf);
+  hc={x:160,w:[86,72,58][DIFF],t:30,sc:0,it:[],sp:0,l:performance.now(),on:true};
+  show("catch");$("#cs").textContent=0;$("#ct").textContent=30;cRaf=requestAnimationFrame(cLoop);
+}
+const cMove=px=>{const r=cv.getBoundingClientRect();hc.x=Math.max(hc.w/2,Math.min(320-hc.w/2,(px-r.left)/r.width*320))};
+cv.addEventListener("pointermove",e=>{if(hc&&hc.on)cMove(e.clientX)});
+cv.addEventListener("pointerdown",e=>{if(hc&&hc.on)cMove(e.clientX)});
+document.addEventListener("keydown",e=>{if(hc&&hc.on&&$("#catch").classList.contains("on")){if(e.key==="ArrowLeft")hc.x=Math.max(hc.w/2,hc.x-24);if(e.key==="ArrowRight")hc.x=Math.min(320-hc.w/2,hc.x+24)}});
+function cLoop(now){
+  if(!hc||!hc.on)return;
+  const dt=Math.min(.05,(now-hc.l)/1000);hc.l=now;hc.t-=dt;hc.sp-=dt;
+  if(hc.sp<=0){
+    hc.sp=[.75,.6,.46][DIFF]*(.8+Math.random()*.4);
+    const r=Math.random()*100,bad=Math.random()<[.18,.26,.34][DIFF];
+    const it=bad?{e:"🥀",p:-15}:r<55?{e:"🍺",p:10}:r<90?{e:"🌾",p:5}:{e:"🍯",p:25};
+    it.x=20+Math.random()*280;it.y=-20;it.v=[150,190,240][DIFF]*(.85+Math.random()*.3);hc.it.push(it);
+  }
+  cx.clearRect(0,0,320,420);
+  const px=hc.x,py=372,hw=hc.w/2;
+  cx.fillStyle="#e9b94a";cx.beginPath();cx.moveTo(px-hw,py-30);cx.lineTo(px+hw,py-30);cx.lineTo(px+hw-8,py+30);cx.lineTo(px-hw+8,py+30);cx.closePath();cx.fill();
+  cx.fillStyle="#fff3d6";cx.fillRect(px-hw-2,py-40,hc.w+4,12);
+  cx.font="28px serif";cx.textAlign="center";cx.textBaseline="middle";
+  for(let i=hc.it.length-1;i>=0;i--){
+    const o=hc.it[i];o.y+=o.v*dt;cx.fillText(o.e,o.x,o.y);
+    if(o.y>py-36&&o.y<py+20&&Math.abs(o.x-px)<hw+6){
+      hc.sc=Math.max(0,hc.sc+o.p);hc.it.splice(i,1);$("#cs").textContent=hc.sc;
+      if(o.p<0){sfx.miss();if(navigator.vibrate)navigator.vibrate(60)}else if(o.p>=25)sfx.perfect();else tone(560+o.p*14,.12,"triangle",.2);
+    }else if(o.y>440)hc.it.splice(i,1);
+  }
+  $("#ct").textContent=Math.max(0,Math.ceil(hc.t));
+  if(hc.t<=0){hc.on=false;end(hc.sc,[300,340,390][DIFF]);return}
+  cRaf=requestAnimationFrame(cLoop);
+}
+
+/* ===== GAME 3: TAPROOM MATCH ===== */
+const FACES=[["🍺","#e9b94a","Lager"],["🍯","#f2c34d","Bee’s"],["🌿","#d98a2b","IPA"],["☕","#c58b5c","Stout"],["🍻","#f3d96b","Pils"],["🍕","#e8826a","Pizza"],["🌮","#8fc3a6","Tacos"],["🥨","#d3ab72","Pretzel"]];
+let mm=null;
+function startMem(){
+  GAME=2;LAST=startMem;if(mm)clearInterval(mm.iv);
+  const n=[4,6,8][DIFF],lim=[60,70,75][DIFF];
+  const deck=FACES.slice(0,n).flatMap(f=>[f,f]).sort(()=>Math.random()-.5);
+  mm={n,lim,t:lim,open:[],ok:0,miss:0,busy:false,deck};
+  $("#mem").innerHTML=deck.map((f,i)=>`<button class="mc" data-i="${i}" style="--c:${f[1]}" aria-label="Card ${i+1}">C</button>`).join("");
+  show("memory");mHud();
+  mm.iv=setInterval(()=>{mm.t--;mHud();if(mm.t<=0)mEnd()},1000);
+}
+const mScore=()=>Math.max(0,mm.ok*100-mm.miss*15+(mm.ok===mm.n?mm.t*2:0));
+function mHud(){$("#mt").textContent=Math.max(0,mm.t);$("#mx").textContent=mm.miss;$("#ms").textContent=mScore()}
+function mEnd(){clearInterval(mm.iv);mm.busy=true;const m=mm;setTimeout(()=>end(mScore(),m.n*100+m.lim*2),700)}
+$("#mem").addEventListener("click",e=>{
+  const c=e.target.closest(".mc");if(!c||!mm||mm.busy||c.classList.contains("up"))return;
+  au();const f=mm.deck[+c.dataset.i];c.classList.add("up");c.innerHTML=f[0]+"<small>"+f[2]+"</small>";tone(520,.08,"triangle",.15);
+  mm.open.push(c);
+  if(mm.open.length===2){
+    const a=mm.open[0],b=mm.open[1];mm.open=[];
+    if(mm.deck[+a.dataset.i]===mm.deck[+b.dataset.i]){mm.ok++;a.classList.add("ok");b.classList.add("ok");sfx.good();mHud();if(mm.ok===mm.n)mEnd()}
+    else{mm.miss++;mm.busy=true;sfx.miss();mHud();setTimeout(()=>{[a,b].forEach(x=>{x.classList.remove("up");x.textContent="C"});mm.busy=false},750)}
+  }
+});
+</script>
+</body>
+</html>
